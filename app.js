@@ -21,7 +21,6 @@ const user = require("./controller/userController");
 app.use("/api/v2/user", user);
 
 // it's for ErrorHandling
-
 app.use(ErrorHandler);
 
 module.exports = app;
