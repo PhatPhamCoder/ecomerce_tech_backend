@@ -48,11 +48,32 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
       await sendMail({
         email: user.email,
         subject: "Activate your account!",
-        message: `Hello ${user.name}! please click on the link to activate your account: ${activationUrl}`,
+        message: `
+        <div style="width:100%;background:#0d253f;text-align:left; border-radius:10px">
+          <div style="padding:10px">
+            <h2 style="font-size:20px;font-weight:700;letter-spacing:0.08em;margin:0 0 8px 0;color:#fff">
+              Hi ${user.name}!
+            </h2>
+            <div>
+            <hr style="text-align:left;margin:0px;width:40px;height:3px;color:#01b4e4;background-color:#01b4e4;border-radius:4px;border:none">
+            <p style="font-size:15px;font-weight:300;color:#fff">
+              Thanks for signing up to The PTech EShop. Before we can continue, we need to validate your email address.
+            </p>
+            <a style="color:#fff;border-radius:20px;border:10px solid #01b4e4;background-color:#01b4e4;padding:0 10px;text-transform:uppercase;text-decoration:none;font-weight:700" 
+              href=${activationUrl} target="_blank">Activate My Account</a>
+            </div>
+            <hr style="margin:20px 0;color:#fff;height:1px;border:0;background-color:#fff;">
+            <p style="margin:0;padding:0;font-size:13px;color:#fff">
+              You are receiving this email because you are a registered user on 
+              <a style="font-size:13px;color:#fff" href="https://www.phatpham.tech" target="_blank">www.phatpham.tech</a>.
+            </p>
+          </div>
+        </div>
+          `,
       });
       res.status(201).json({
         success: true,
-        message: `please check your email: ${user.email} to activate your account!`,
+        html: `Hi, ${user.name} to activate your account!`,
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
