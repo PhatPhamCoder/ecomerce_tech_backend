@@ -47,7 +47,7 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
     try {
       await sendMail({
         email: user.email,
-        subject: "Activate your account!",
+        subject: "🚀 Activate your account!",
         message: `
         <div style="width:100%;background:#0d253f;text-align:left; border-radius:10px">
           <div style="padding:10px">
