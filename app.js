@@ -30,7 +30,9 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
 
 // Import routes
 const user = require("./controller/userController");
+const shop = require("./controller/shopController");
 app.use("/api/v2/user", user);
+app.use("/api/v2/shop", shop);
 
 // it's for ErrorHandling
 app.use(ErrorHandler);

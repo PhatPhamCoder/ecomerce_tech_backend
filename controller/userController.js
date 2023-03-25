@@ -28,7 +28,7 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
           });
         }
       });
-      return next(new ErrorHandler("User already exists", 400));
+      return next(new ErrorHandler("Error Deleting File", 400));
     }
 
     const filename = req.file.filename;
@@ -39,6 +39,9 @@ router.post("/create-user", upload.single("file"), async (req, res, next) => {
       email: email,
       password: password,
       avatar: fileUrl,
+      address: req.body.address,
+      phoneNumber: req.body.phoneNumber,
+      zipCode: req.body.zipCode,
     };
 
     const activationToken = createActivationToken(user);
