@@ -5,11 +5,12 @@ const fs = require("fs");
 const jwt = require("jsonwebtoken");
 const sendMail = require("../utils/sendMail");
 const sendToken = require("../utils/jwtToken");
-const { isAuthenticated } = require("../middleware/auth");
+const { isAuthenticated, isSeller } = require("../middleware/auth");
 const Shop = require("../model/shop");
 const { upload } = require("../multer");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");
+const sendShopToken = require("../utils/sendShopToken");
 
 // Create Shop
 router.post("/create-shop", upload.single("file"), async (req, res, next) => {
@@ -127,7 +128,7 @@ router.post(
         phoneNumber,
       });
 
-      sendToken(seller, 201, res);
+      sendShopToken(seller, 201, res);
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
@@ -145,13 +146,13 @@ router.post(
         return next(new ErrorHandler("Please provide the all fields!", 400));
       }
 
-      const user = await Shop.findOne({ email }).select("+password");
+      const seller = await Shop.findOne({ email }).select("+password");
 
-      if (!user) {
+      if (!seller) {
         return next(new ErrorHandler("User doesn't exists!", 400));
       }
 
-      const isPasswordValid = await Shop.comparePassword(password);
+      const isPasswordValid = await seller.comparePassword(password);
 
       if (!isPasswordValid) {
         return next(
@@ -159,8 +160,31 @@ router.post(
         );
       }
 
-      sendToken(user, 201, res);
+      sendShopToken(seller, 201, res);
     } catch (error) {
+      return next(new ErrorHandler(error.message, 500));
+    }
+  }),
+);
+
+// Load Shop
+router.get(
+  "/getSeller",
+  isSeller,
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const seller = await Shop.findById(req.seller._id);
+
+      if (!seller) {
+        return next(new ErrorHandler("User doesn't exists", 400));
+      }
+
+      res.status(200).json({
+        success: true,
+        seller,
+      });
+    } catch (error) {
+      console.log(error);
       return next(new ErrorHandler(error.message, 500));
     }
   }),
