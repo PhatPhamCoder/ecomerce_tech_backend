@@ -6,6 +6,7 @@ const Product = require("../model/product");
 const Shop = require("../model/shop");
 const { upload } = require("../multer");
 const ErrorHandler = require("../utils/ErrorHandler");
+const fs = require("fs");
 // Create Product
 router.post(
   "/create-product",
@@ -60,6 +61,19 @@ router.delete(
   catchAsyncErrors(async (req, res, next) => {
     try {
       const productId = req.params.id;
+
+      const productData = await Product.findById(productId);
+
+      productData.images.forEach((imageUrls) => {
+        const filename = imageUrls;
+        const filePath = `uploads/${filename}`;
+
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      });
 
       const product = await Product.findByIdAndDelete(productId);
 

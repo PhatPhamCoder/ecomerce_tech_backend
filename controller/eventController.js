@@ -6,7 +6,7 @@ const Event = require("../model/event");
 const { upload } = require("../multer");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { isSeller } = require("../middleware/auth");
-
+const fs = require("fs");
 // Create Product
 router.post(
   "/create-event",
@@ -62,12 +62,23 @@ router.delete(
     try {
       const eventId = req.params.id;
 
+      const eventData = await Event.findById(eventId);
+
+      eventData.images.forEach((imageUrls) => {
+        const filename = imageUrls;
+        const filePath = `uploads/${filename}`;
+        fs.unlink(filePath, (err) => {
+          if (err) {
+            console.log(err);
+          }
+        });
+      });
+
       const event = await Event.findByIdAndDelete(eventId);
 
       if (!event) {
         return next(new ErrorHandler("Event not found with this id!", 500));
       }
-
       res.status(201).json({
         success: true,
         message: "Event Deleted Successfully!",

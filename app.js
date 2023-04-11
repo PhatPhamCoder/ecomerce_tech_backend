@@ -33,11 +33,13 @@ const user = require("./controller/userController");
 const shop = require("./controller/shopController");
 const product = require("./controller/productController");
 const event = require("./controller/eventController");
+const coupon = require("./controller/couponCodeController");
 
 app.use("/api/v2/user", user);
 app.use("/api/v2/shop", shop);
 app.use("/api/v2/product", product);
 app.use("/api/v2/event", event);
+app.use("/api/v2/coupon", coupon);
 
 // it's for ErrorHandling
 app.use(ErrorHandler);
